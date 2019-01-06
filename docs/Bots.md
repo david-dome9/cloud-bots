@@ -19,7 +19,7 @@ Note: Trail_name and bucket_name are optional and don't need to be set.
 Limitations: none   
 
 ## cloudtrail_send_to_cloudwatch
-What it does: Makes CloudTrail output logs to CloudWatchLogs. If the log group doesn't exist alredy, it'll reate a new one. 
+What it does: Makes CloudTrail output logs to CloudWatchLogs. If the log group doesn't exist alredy, it'll create a new one. 
 Usage: AUTO: cloudtrail_send_to_cloudwatch <log_group_name>    
 Limitations: none    
 Defaults: 
@@ -44,7 +44,7 @@ Variables (and their defaults):
     allSupported = True
     includeGlobalResourceTypes = True (if you want to change this, use the variable include_global_resource_types_region=<desired_region>)  
 
-Defaults (not changable currently via variable):
+Defaults (not changable currently using a variable):
     file deliveryFrequency(to S3) is set to One_Hour
     config_name = default  
 
@@ -60,7 +60,7 @@ Sample GSL: Instance should have roles
 What it does: Snapshots the EBS volumes on an instance  
 Usage: AUTO: ec2_create_snapshot  
 Notes: The snapshot description will show that it was created by CloudBots and the rule that failed that triggered the bot. Also, the snapshot will be tagged with a key of "source_instance_id" and a value with the instance id from the source instance.   
-Limitations: This will not work on Instance Store volumes. Only EBS  
+Limitations: This will not work on Instance Store volumes, only on EBS  
 
 ## ec2_release_eips  
 What it does: Disassociates and releases all EIPs on an instance  
@@ -136,14 +136,14 @@ Limitations: VPCs have lots of interconnected services. This is currently just f
 What it does: Enables rotation on a KMS key  
 Usage: AUTO: kms_enable_rotation  
 Sample GSL: KMS where isCustomerManaged=true and deletionDate!=0 should have rotationStatus=true
-Limitations: Edits can not be made to AWS maged keys. Only customer managed keys can be edited.  
+Limitations: Edits can not be made to AWS managed keys. Only customer managed keys can be edited.  
  
 ## mark_for_stop_ec2_resource
 What it does: Tags an ec2 resource with "marked_for_stop" and <current epoch time>     
 Usage: AUTO: mark_for_stop_ec2_resource <time><unit(m,h,d)>  
 Example: AUTO: mark_for_stop_ec2_resource 3h  
 Note: This is meant to be used in conjunction with a more aggressive action like stopping or termanating an instance. The first step will be to tag an instance with the time that we want to tigger the remediation bot.  
-From there, a rule like "Instance should not have tags with [ key='marked_for_stop' and value before(1, 'minutes') ]" can be ran to check how long an instance has had the 'mark for stop' tag. 
+From there, a rule like "Instance should not have tags with [ key='marked_for_stop' and value before(1, 'minutes') ]" can be run to check how long an instance has had the 'mark for stop' tag. 
 Limitations: none  
 
 THIS WORKS ACROSS ALL EC2 RELATED SERVICES:  
@@ -163,7 +163,7 @@ THIS WORKS ACROSS ALL EC2 RELATED SERVICES:
 
 
 ## rds_quarantine_instance
-What it does: Attaches the RDS instance a SG with no rules so it can't communicate with the outside world  
+What it does: Attaches to the RDS instance an SG with no rules, so it can't communicate with the outside world  
 Usage: AUTO: rds_quarantine_instance  
 Limitations: Instance needs to be "Available" in order to update. If it's in "backing up" state, this will fail  
 (Might not work with Aurora since it's in a cluster)  
@@ -199,7 +199,7 @@ Usage: AUTO: sg_delete
 Limitations: This will fail if there is something still attached to the SG.  
 
 ## sg_rules_delete
-What it does: Deletes all ingress and egress rules from a SG  
+What it does: Deletes all ingress and egress rules from an SG  
 Usage: AUTO: sg_rules_delete  
 Limitations: none  
 
@@ -210,7 +210,7 @@ Usage: AUTO: sg_single_rule_delete split=<true|false> protocol=<TCP|UDP> scope=<
 Example: AUTO: sg_single_rule_delete split=false protocol=TCP scope=0.0.0.0/0 direction=inbound port=22
 Sample GSL: SecurityGroup should not have inboundRules with [scope = '0.0.0.0/0' and port<=22 and portTo>=22]
 
-Conditions and caveats: Deleting a single rule on a security group can be difficult because the problematic port can be nested within a wider range of ports. If SSH is open because a SG has all of TCP open, do you want to delete the whole rule or would you break up the SG into the same scope but port 0-21 and a second rule for 23-end of TCP port range?
+Conditions and caveats: Deleting a single rule on a security group can be difficult because the problematic port can be nested within a wider range of ports. If SSH is open because a SG has all of TCP open, do you want to delete the whole rule, or would you perhaps break up the SG into the same scope, but with ports 0-21, and a second rule for ports 23-end of TCP port range?
 Currently the way this is being addressed is using the 'split' parameter. If it's set as false, CloudBots will only look for the specific port in question. If it's nested within a larger port scope, it'll be skipped. 
 If you set split to true, then the whole rule that the problematic port is nested in will be removed and 2 split rules will be added in its place (ex: if port 1-30 is open and you want to remove SSH, the new rules will be for port 1-21 and port 23-30). 
 
