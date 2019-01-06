@@ -16,7 +16,7 @@ cd cloud-bots
 zip -r -X remediation-function.zip bots/ handle_event.py index.py send_events_and_errors.py 
 ```
 
-### Get the name of a S3 bucket to load the zip into
+### Get the name of a S3 bucket into which to load the zip 
 The zip will be automicatically uploaded to your S3 bucket before deployment. If you have an S3 bucket already, skip this step and put the bucket name in the command on the next step. 
 
 If you need to create a new bucket:
@@ -125,12 +125,6 @@ ARN that Dome9 sends events to  InputTopicARN   arn:aws:sns:us-west-2:7268531848
     "SubscriptionArn": "pending confirmation"
 }
 ```
-
-
-
-
-
-
 # Examples
  
 ## Sample output from the remediation function
@@ -213,7 +207,7 @@ JSON - Full Entity
 
 
 
-# Adding new actions
+# Add new actions
 Any new action that is added just needs to follow the format of the other actions and be put in the action folder. 
 
 Here is a sample from sg_delete. The rule and entity variables that are passed through come from the source SNS message. Params are only passed through if there are any in the tag (ex: AUTO: ec2_tag_instance owner unknown)
@@ -242,5 +236,5 @@ def run_action(rule,entity,params):
 
 
 ## Questions / Comments
-Contact: Alex Corstorphine (alex@dome9.com)
+Contact: 
 
